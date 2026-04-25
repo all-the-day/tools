@@ -47,16 +47,24 @@ def save_data(data):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-# 静态文件路由
+# 静态文件路由 - 提供构建后的前端文件
 @app.route('/')
 def index():
-    """返回主页面"""
-    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'index.html')
+    """返回主页面（构建后的版本）"""
+    dist_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist')
+    return send_from_directory(dist_dir, 'index.html')
+
+
+@app.route('/assets/<path:filename>')
+def assets_files(filename):
+    """返回构建后的静态资源（JS、CSS 等）"""
+    dist_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist', 'assets')
+    return send_from_directory(dist_dir, filename)
 
 
 @app.route('/static/<path:filename>')
 def static_files(filename):
-    """返回静态文件"""
+    """返回静态文件（上传的图片等）"""
     return send_from_directory(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static'), filename)
 
 
